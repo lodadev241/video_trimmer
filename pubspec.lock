@@ -227,11 +227,10 @@ packages:
   video_player:
     dependency: "direct main"
     description:
-      path: "."
-      ref: main
-      resolved-ref: b5e15074badecef99f673d406e52dc5c7b185f11
-      url: "https://github.com/lodadev241/video_player"
-    source: git
+      name: video_player
+      sha256: "4a8c3492d734f7c39c2588a3206707a05ee80cef52e8c7f3b2078d430c84bc17"
+      url: "https://pub.dev"
+    source: hosted
     version: "2.9.2"
   video_player_android:
     dependency: transitive
