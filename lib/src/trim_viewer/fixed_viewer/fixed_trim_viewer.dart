@@ -427,37 +427,6 @@ class _FixedTrimViewerState extends State<FixedTrimViewer>
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          widget.showDuration
-              ? SizedBox(
-                  width: _thumbnailViewerW,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                        Text(
-                          Duration(milliseconds: _videoStartPos.toInt())
-                              .format(widget.durationStyle),
-                          style: widget.durationTextStyle,
-                        ),
-                        videoPlayerController.value.isPlaying
-                            ? Text(
-                                Duration(milliseconds: _currentPosition.toInt())
-                                    .format(widget.durationStyle),
-                                style: widget.durationTextStyle,
-                              )
-                            : Container(),
-                        Text(
-                          Duration(milliseconds: _videoEndPos.toInt())
-                              .format(widget.durationStyle),
-                          style: widget.durationTextStyle,
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              : Container(),
           CustomPaint(
             foregroundPainter: TrimEditorPainter(
               startPos: _startPos,
@@ -486,6 +455,37 @@ class _FixedTrimViewerState extends State<FixedTrimViewer>
               ),
             ),
           ),
+          widget.showDuration
+              ? SizedBox(
+                  width: _thumbnailViewerW,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Text(
+                          Duration(milliseconds: _videoStartPos.toInt())
+                              .format(widget.durationStyle),
+                          style: widget.durationTextStyle,
+                        ),
+                        videoPlayerController.value.isPlaying
+                            ? Text(
+                                Duration(milliseconds: _currentPosition.toInt())
+                                    .format(widget.durationStyle),
+                                style: widget.durationTextStyle,
+                              )
+                            : Container(),
+                        Text(
+                          Duration(milliseconds: _videoEndPos.toInt())
+                              .format(widget.durationStyle),
+                          style: widget.durationTextStyle,
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : Container(),
         ],
       ),
     );
