@@ -305,33 +305,40 @@ class _FixedTrimViewerState extends State<FixedTrimViewer>
   /// Determine which [EditorDragType] is used.
   void _onDragStart(DragStartDetails details) {
     debugPrint("_onDragStart");
-    debugPrint(details.localPosition.toString());
-    debugPrint((_startPos.dx - details.localPosition.dx).abs().toString());
-    debugPrint((_endPos.dx - details.localPosition.dx).abs().toString());
+    debugPrint('StartPos: ${_startPos.dx}');
+    debugPrint('EndPos: ${_endPos.dx}');
 
-    final startDifference = _startPos.dx - details.localPosition.dx;
-    final endDifference = _endPos.dx - details.localPosition.dx;
+    final tapDx = details.localPosition.dx;
+    debugPrint('TapDx: $tapDx');
 
-    // First we determine whether the dragging motion should be allowed. The allowed
-    // zone is widget.sideTapSize (left) + frame (center) + widget.sideTapSize (right)
-    if (startDifference <= widget.editorProperties.sideTapSize &&
-        endDifference >= -widget.editorProperties.sideTapSize) {
+    final sideTapSize = widget.editorProperties.sideTapSize;
+    debugPrint('SideTapSize: $sideTapSize');
+
+    final startDifference = (tapDx * 0.92) - _startPos.dx;
+    final endDifference = (tapDx * 0.92) - _endPos.dx;
+    debugPrint('StartDiff: $startDifference');
+    debugPrint('EndDiff: $endDifference');
+
+    // Left range
+    final startIsWithinLeftRange = startDifference.abs() <= sideTapSize;
+    final endIsWithinLeftRange = endDifference.abs() <= sideTapSize;
+
+    // Right range
+    final startIsWithinRightRange =
+        tapDx >= _startPos.dx && tapDx <= _startPos.dx + sideTapSize * 1.75;
+    final endIsWithinRightRange =
+        tapDx >= _endPos.dx && tapDx <= _endPos.dx + sideTapSize * 1.75;
+
+    // Determine which part is dragged
+    if (startIsWithinLeftRange || startIsWithinRightRange) {
+      _dragType = EditorDragType.left;
+      _allowDrag = true;
+    } else if (endIsWithinLeftRange || endIsWithinRightRange) {
+      _dragType = EditorDragType.right;
       _allowDrag = true;
     } else {
-      debugPrint("Dragging is outside of frame, ignoring gesture...");
-      _allowDrag = false;
-      return;
-    }
-
-    // Now we determine which part is dragged
-    if (details.localPosition.dx <=
-        _startPos.dx + widget.editorProperties.sideTapSize) {
-      _dragType = EditorDragType.left;
-    } else if (details.localPosition.dx <=
-        _endPos.dx - widget.editorProperties.sideTapSize) {
       _dragType = EditorDragType.center;
-    } else {
-      _dragType = EditorDragType.right;
+      _allowDrag = true;
     }
   }
 
