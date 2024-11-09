@@ -6,7 +6,6 @@ import 'package:get_thumbnail_video/index.dart';
 import 'package:get_thumbnail_video/video_thumbnail.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-
 class FixedThumbnailViewer extends StatelessWidget {
   final File videoFile;
   final int videoDuration;
@@ -19,7 +18,7 @@ class FixedThumbnailViewer extends StatelessWidget {
   /// For showing the thumbnails generated from the video,
   /// like a frame by frame preview
   const FixedThumbnailViewer({
-    Key? key,
+    super.key,
     required this.videoFile,
     required this.videoDuration,
     required this.thumbnailHeight,
@@ -27,7 +26,7 @@ class FixedThumbnailViewer extends StatelessWidget {
     required this.fit,
     required this.onThumbnailLoadingComplete,
     this.quality = 75,
-  }) : super(key: key);
+  });
 
   Stream<List<Uint8List?>> generateThumbnail() async* {
     final String videoPath = videoFile.path;
@@ -63,6 +62,8 @@ class FixedThumbnailViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
+
     return StreamBuilder<List<Uint8List?>>(
       stream: generateThumbnail(),
       builder: (context, snapshot) {
@@ -82,13 +83,25 @@ class FixedThumbnailViewer extends StatelessWidget {
                       opacity: 0.2,
                       child: Image.memory(
                         imageBytes[0] ?? kTransparentImage,
+                        height: thumbnailHeight,
+                        width: thumbnailHeight,
+                        cacheHeight:
+                            (thumbnailHeight * devicePixelRatio).toInt(),
+                        cacheWidth:
+                            (thumbnailHeight * devicePixelRatio).toInt(),
                         fit: fit,
                       ),
                     ),
                     index < imageBytes.length
                         ? FadeInImage(
                             placeholder: MemoryImage(kTransparentImage),
-                            image: MemoryImage(imageBytes[index]!),
+                            image: ResizeImage(
+                              MemoryImage(imageBytes[index]!),
+                              width:
+                                  (thumbnailHeight * devicePixelRatio).toInt(),
+                              height:
+                                  (thumbnailHeight * devicePixelRatio).toInt(),
+                            ),
                             fit: fit,
                           )
                         : const SizedBox(),
